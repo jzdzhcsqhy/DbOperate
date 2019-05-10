@@ -11,9 +11,9 @@
 #ifndef QT_DBMGR_HPP
 #define QT_DBMGR_HPP
 
-#include "../DbMgr.hpp"
-#include "../../Database/LogicImpl/MutestDbLogic.h"
-#include "../../Database/DbInterfaceImpl/DbInterfaceImplForQtSqlite.h"
+#include "DbMgr.hpp"
+#include "../Database/LogicImpl/MutestDbLogic.h"
+#include "../Database/DbInterfaceImpl/DbInterfaceImplForQtSqlite.h"
 #include <QtSql>
 
 class CQtDbMgr : public CDbMgr<CMutestDbLogic>
@@ -26,7 +26,8 @@ public:
         // 先拿到静态对象
         auto& db = GetDb();
         // 获得数据库指针
-        CDbInterfaceImplForQtSqlite * pDbInterface = (CDbInterfaceImplForQtSqlite*)db.get_db();
+        CDbInterfaceImplForQtSqlite * pDbInterface =
+                reinterpret_cast<CDbInterfaceImplForQtSqlite*>(db.get_db());
         if( pDbInterface )
         {
             return pDbInterface->m_Db;
