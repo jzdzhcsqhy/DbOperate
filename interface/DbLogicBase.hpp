@@ -11,7 +11,7 @@
 #ifndef DBLOGIC_H
 #define DBLOGIC_H
 
-#include "DbInterface.h"
+#include "DbInterface.hpp"
 #include <QString>
 #include <vector>
 #include <memory>

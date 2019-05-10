@@ -25,10 +25,10 @@ public:
 	{
 		
 	}
-    virtual ~ CDbInterface();
-	{
-		
-	}
+    virtual ~ CDbInterface()
+    {
+
+    }
 
 ///////////////// 纯虚函数接口声明，在派生类中实现
 public:

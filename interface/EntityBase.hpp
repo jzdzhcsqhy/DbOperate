@@ -7,8 +7,8 @@
 #include <tuple>
 #include <utility>
 #include <algorithm>
-#include "DbInterface.h"
-#include "RecordsetMgr.h"
+#include "DbInterface.hpp"
+#include "RecordsetMgr.hpp"
 // 定义对象构造函数
 #define CONSTRUCT_OBJECT_MODEL(class_name)										\
     public:																		\
@@ -85,18 +85,14 @@ class CEntityBase
 {
 
 public:
-	CEntityBase::CEntityBase(CDbInterface *m_db = nullptr, std::string strCopyType = "")
-    :m_pdb(m_db), m_strCopyType(strCopyType)
-	{
+    CEntityBase(CDbInterface *m_db = nullptr, std::string strCopyType = "")
+        :m_pdb(m_db), m_strCopyType(strCopyType)
+    {
+    }
 
-	}
+    virtual ~CEntityBase(){}
 
-	virtual CEntityBase::~CEntityBase()
-	{
-
-	}
-
-///////////////////////////////纯虚接口函数，派生类实现
+    ///////////////////////////////纯虚接口函数，派生类实现
 public:
     // 生成实体时，为各个属性初始化值，构造函数中调用
     virtual void init () = 0;
@@ -109,51 +105,51 @@ public:
     // 根据表字段生成数据信息相关的sql语句
     virtual std::string GenDataSql(bool bWithFieldName = false ) =0;
 
-//////////////////////////////功能函数
+    //////////////////////////////功能函数
 protected:
     // 生成插入语句
     inline std::string GenInsertSQL()
-	{
-		// 插入语句的实例 insert into TABLE_NAME values( val1, val2, val3 );
-		// 所以这里GenDataSql函数参数为false ，不带字段名称
-		std::string strSql = "insert into "+ get_table_name()
-				+" values(null," + GenDataSql(false) + ")";
-		return strSql;
-	}
+    {
+        // 插入语句的实例 insert into TABLE_NAME values( val1, val2, val3 );
+        // 所以这里GenDataSql函数参数为false ，不带字段名称
+        std::string strSql = "insert into "+ get_table_name()
+                +" values(null," + GenDataSql(false) + ")";
+        return strSql;
+    }
     // 生成更新语句
     inline std::string GenUpdateSQL()
-	{
-		// 更新语句的实例 update TABLE_NAME　set col1=val1, col2=val2 where id = 1;
-		// 所以这里GenDataSql函数参数为true， 带字段名称
-		std::string strSql = "update "+ get_table_name() +
-				" set "+ GenDataSql(true) +
-				" where id = " + std::to_string(m_iId);
-		return strSql;
-	}
+    {
+        // 更新语句的实例 update TABLE_NAME　set col1=val1, col2=val2 where id = 1;
+        // 所以这里GenDataSql函数参数为true， 带字段名称
+        std::string strSql = "update "+ get_table_name() +
+                " set "+ GenDataSql(true) +
+                " where id = " + std::to_string(m_iId);
+        return strSql;
+    }
     // 生成删除语句
-    inline std::string GenDeleteSQL();
-	{
-		std::string strSql = "delete from " + get_table_name() +
-            " where id = "  + std::to_string(m_iId);
-		return strSql;
-	}
+    inline std::string GenDeleteSQL()
+    {
+        std::string strSql = "delete from " + get_table_name() +
+                " where id = "  + std::to_string(m_iId);
+        return strSql;
+    }
     // 初始化值
     void init_value(std::string &val)
-	{
-		val = "";
-	}
-	void init_value(int &val)
-	{
-		val = 0;
-	}
-	void init_value(double &val)
-	{
-		val = 0.0;
-	}
-	void init_value(bool &val)
-	{
-		val =false;
-	}
+    {
+        val = "";
+    }
+    void init_value(int &val)
+    {
+        val = 0;
+    }
+    void init_value(double &val)
+    {
+        val = 0.0;
+    }
+    void init_value(bool &val)
+    {
+        val =false;
+    }
 
 
     template< typename T>
@@ -202,15 +198,15 @@ public:
         m_pdb = pdb;
     }
 
-	// 通用赋值操作符
-	virtual CEntityBase &CEntityBase::operator=(CEntityBase &o)
-	{
-		m_pdb = o.m_pdb;
-		return *this;
-	}
+    // 通用赋值操作符
+    virtual CEntityBase& operator=(CEntityBase &o)
+    {
+        m_pdb = o.m_pdb;
+        return *this;
+    }
 
 
-//////////////////////////////私有属性
+    //////////////////////////////私有属性
 protected:
     // 数据库连接指针
     CDbInterface* m_pdb;
@@ -221,7 +217,7 @@ protected:
     // 数据表的主键，id
     int m_iId;
 
-/////////////////////////////数据操作
+    /////////////////////////////数据操作
 public:
 
     // 构建查询字符串
@@ -332,138 +328,127 @@ public:
         return  m_pdb->select_single(sql,this);
     }
 
-//    // 读取整张表，追加到存储结构体
-//    bool get_table_append (std::vector<CEntityBase*> &v, std::string col_name = "", std::string col_value = "", std::string col_name2 = "", std::string col_value2 ="" );
+    //    // 读取整张表，追加到存储结构体
+    //    bool get_table_append (std::vector<CEntityBase*> &v, std::string col_name = "", std::string col_value = "", std::string col_name2 = "", std::string col_value2 ="" );
 
 
-//    // 将自身的数据同步给数据库s
-      bool modify_self();
-//    // 删除自身所代表的数据记录
-      bool delete_self();
+    //************************************************************************************************************
+    // 函数名称	: modify_self
+    // 访问权限	: public
+    // 功能说明	: 将自身记录的数据同步到数据表中
+    // 返回值	: bool
+    // 参数列表	:
+    // 创建日期	: 2019年5月7日
+    // 备注		:
+    //************************************************************************************************************
+    bool modify_self()
+    {
+        // 检测一下数据库连接是否有效
+        if( !m_pdb )
+        {
+            return false;
+        }
 
-//    // 添加一条记录，数据为自身记录的值，并返回信息记录的id
-      int add_item ();
-//    // 用来获得下一条插入记录被分配的id
-      int get_next_auto_id();
-
-
-	//************************************************************************************************************
-	// 函数名称	: modify_self
-	// 访问权限	: public
-	// 功能说明	: 将自身记录的数据同步到数据表中
-	// 返回值	: bool
-	// 参数列表	:
-	// 创建日期	: 2019年5月7日
-	// 备注		:
-	//************************************************************************************************************
-	bool modify_self()
-	{
-		// 检测一下数据库连接是否有效
-		if( !m_pdb )
-		{
-			return false;
-		}
-
-		// 获得更新语句
-		std::string strUpdateSql = GenUpdateSQL() ;
-		// 将语句转换成UTF-8编码
-		// 调用接口语句执行
-		return m_pdb->Update( strUpdateSql );
-	}
+        // 获得更新语句
+        std::string strUpdateSql = GenUpdateSQL() ;
+        // 将语句转换成UTF-8编码
+        // 调用接口语句执行
+        return m_pdb->Update( strUpdateSql );
+    }
 
 
-	//************************************************************************************************************
-	// 函数名称	: delete_self
-	// 访问权限	: public
-	// 功能说明	: 删除自身所代表的数据
-	// 返回值	: bool
-	// 参数列表	:
-	// 创建日期	: 2019/02/20
-	// 备注		:
-	//************************************************************************************************************
-	bool delete_self()
-	{
-		// 检测一下数据库连接是否有效
-		if( !m_pdb )
-		{
-			return false;
-		}
+    //************************************************************************************************************
+    // 函数名称	: delete_self
+    // 访问权限	: public
+    // 功能说明	: 删除自身所代表的数据
+    // 返回值	: bool
+    // 参数列表	:
+    // 创建日期	: 2019/02/20
+    // 备注		:
+    //************************************************************************************************************
+    bool delete_self()
+    {
+        // 检测一下数据库连接是否有效
+        if( !m_pdb )
+        {
+            return false;
+        }
 
-		// 获得删除语句
-		std::string strUpdateSql  = GenDeleteSQL() ;
-		// 调用接口执行
-		return m_pdb->Delete( strUpdateSql );
-	}
+        // 获得删除语句
+        std::string strUpdateSql  = GenDeleteSQL() ;
+        // 调用接口执行
+        return m_pdb->Delete( strUpdateSql );
+    }
 
 
 
-	// 数据库表记录的id被强行设置为必带和自增长，所以这里可以获得某张表下一个id的值
-	// 这个值由sqlite自己维护，查询使用就行
-	int get_next_auto_id()
-	{
-		if( !m_pdb )
-		{
-			return -1;
-		}
-		std::string strSql;
-		// sqlite3 中设置了sqlite_sequence表记录各张表的自增长字段的下一个值，直接从这张表中就能查出来
+    // 数据库表记录的id被强行设置为必带和自增长，所以这里可以获得某张表下一个id的值
+    // 这个值由sqlite自己维护，查询使用就行
+    int get_next_auto_id()
+    {
+        if( !m_pdb )
+        {
+            return -1;
+        }
+        std::string strSql;
+        // sqlite3 中设置了sqlite_sequence表记录各张表的自增长字段的下一个值，直接从这张表中就能查出来
 
-		// 构造语句
-		strSql = " select seq from sqlite_sequence where name = '" + get_table_name()+"' ";
+        // 构造语句
+        strSql = " select seq from sqlite_sequence where name = '" + get_table_name()+"' ";
 
-		// 调用数据库接口函数查询
-		std::string strValue = m_pdb->select(strSql);
-		if( strValue.empty())
-		{// 如果没查到，就返回-1
-			return -1;
-		}
-		else
-		{// 查到了，转成整型返回去
-			return atoi(strValue.c_str());
-		}
-	}
+        // 调用数据库接口函数查询
+        std::string strValue = m_pdb->select(strSql);
+        if( strValue.empty())
+        {// 如果没查到，就返回-1
+            return -1;
+        }
+        else
+        {// 查到了，转成整型返回去
+            return atoi(strValue.c_str());
+        }
+    }
 
 
-	//************************************************************************************************************
-	// 函数名称	: add_item
-	// 访问权限	: public
-	// 功能说明	: 将自身所记录的数据插入到数据库中
-	// 返回值	: int 新纪录的id值
-	// 参数列表	:
-	// 创建日期	: 2019/02/20
-	// 备注		:
-	//************************************************************************************************************
-	int add_item()
-	{
-		// 检测数据库连接
-		if( !m_pdb )
-		{
-			return -1;
-		}
+    //************************************************************************************************************
+    // 函数名称	: add_item
+    // 访问权限	: public
+    // 功能说明	: 将自身所记录的数据插入到数据库中
+    // 返回值	: int 新纪录的id值
+    // 参数列表	:
+    // 创建日期	: 2019/02/20
+    // 备注		:
+    //************************************************************************************************************
+    int add_item()
+    {
+        // 检测数据库连接
+        if( !m_pdb )
+        {
+            return -1;
+        }
 
-		// 获得对应表的下一个id值，这个值将被新增记录所使用
-		int iNextId = get_next_auto_id();
+        // 获得对应表的下一个id值，这个值将被新增记录所使用
+        int iNextId = get_next_auto_id();
 
-		if( iNextId <= 0 )
-		{// 如果这个id比0小了，说明获得的不对
-			return -1;
-		}
+        if( iNextId <= 0 )
+        {// 如果这个id比0小了，说明获得的不对
+            return -1;
+        }
 
-		// 调用数据库连接插入数据
-		if( m_pdb->Insert(GenInsertSQL()) )
-		{//如果成功了
-			// 记录id值
-			m_iId = iNextId;
-		}
-		else
-		{// 失败了
-			// id值记录为-1
-			m_iId = -1;
-		}
+        // 调用数据库连接插入数据
+        if( m_pdb->Insert(GenInsertSQL()) )
+        {//如果成功了
+            // 记录id值
+            m_iId = iNextId;
+        }
+        else
+        {// 失败了
+            // id值记录为-1
+            m_iId = -1;
+        }
 
-		// 将id值返回，所以这个函数如果返回-1，说明插入失败
-		return m_iId;
-	}
+        // 将id值返回，所以这个函数如果返回-1，说明插入失败
+        return m_iId;
+    }
 
 
 };
