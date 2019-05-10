@@ -14,11 +14,11 @@
 #pragma once
 
 #include "CommonString.hpp"
-#include "QtCommon/qtstring.hpp"
-#define PATH_APPDATA (CQtString::get_app_path () + ("AppData\\"))
-#define PATH_ROAMING (CQtString::get_app_path () + ("RoamingData\\"))
-#define PATH_TEMPLATE (CQtString::get_app_path () + ("Template\\"))
-#define PATH_RESOURCE (CQtString::get_app_path () + ("Resource\\"))
-#define INI_FILE	(CQtString::get_app_path()+ ("Setting.ini"))
-#define LOG_FILE	( CQtString::get_app_path() + ("Log.txt"))
+
+#define PATH_APPDATA (CCommonString::get_app_path () + ("AppData\\"))
+#define PATH_ROAMING (CCommonString::get_app_path () + ("RoamingData\\"))
+#define PATH_TEMPLATE (CCommonString::get_app_path () + ("Template\\"))
+#define PATH_RESOURCE (CCommonString::get_app_path () + ("Resource\\"))
+#define INI_FILE	(CCommonString::get_app_path()+ ("Setting.ini"))
+#define LOG_FILE	( CCommonString::get_app_path() + ("Log.txt"))
 #endif //__COMMONPATH_H__

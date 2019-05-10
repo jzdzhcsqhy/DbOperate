@@ -12,7 +12,6 @@
 #define DBLOGIC_H
 
 #include "DbInterface.hpp"
-#include <QString>
 #include <vector>
 #include <memory>
 
@@ -27,9 +26,8 @@ class CEntityBase;
 class CDbLogic
 {
 public:
-    // 打开数据库
-	CDbLogic(std::string strRoamingPath)
-		:m_strRoamingPath(strRoamingPath)
+	// 打开数据库
+	CDbLogic()
 	{
 	}
 
@@ -38,29 +36,30 @@ public:
 
 	}
 
-/////////////// 纯虚函数，平台相关函数，由派生类实现，不允许直接调用
+	/////////////// 纯虚函数，平台相关函数，由派生类实现，不允许直接调用
 protected:
-    // 用于判断数据库是否打开，平台相关
-    virtual bool IsDBOpenedImpl() = 0;
-    // 用于创建临时目录，平台相关
-    virtual bool CreatePathImpl(const std::string& strPath) = 0;
-    // 用于拷贝文件，平台相关
-    virtual bool CopyFileImpl(const std::string& strSrc,
-                                const std::string& strDst) = 0;
-    // 用于打开数据库，平台相关，数据库类型相关
-    virtual bool OpenDbImpl( const std::string& strPath ) = 0;
-    // 用于关闭数据库，平台相关，数据库类型相关
-    virtual bool CloseDbImpl() = 0;
-    // 用于获取一个uuid，平台相关
-    virtual std::string GetUuidImpl() = 0;
-    // 用于清除一个目录，平台相关
-    virtual bool ClearDirectoryImpl(std::string& strDir, bool bIncludeSelf) = 0;
-    // 用于获得另存为的路径，平台相关
-    virtual std::string GetSavePathImpl( ) = 0;
-    // 用于新建数据库的时候，进行新建处理
-    virtual std::string NewDbImpl() = 0;
-
-/////////////// 通用功能函数，
+	// 用于判断数据库是否打开，平台相关
+	virtual bool IsDBOpenedImpl() = 0;
+	// 用于创建临时目录，平台相关
+	virtual bool CreatePathImpl(const std::string& strPath) = 0;
+	// 用于拷贝文件，平台相关
+	virtual bool CopyFileImpl(const std::string& strSrc,
+		const std::string& strDst) = 0;
+	// 用于打开数据库，平台相关，数据库类型相关
+	virtual bool OpenDbImpl(const std::string& strPath) = 0;
+	// 用于关闭数据库，平台相关，数据库类型相关
+	virtual bool CloseDbImpl() = 0;
+	// 用于获取一个uuid，平台相关
+	virtual std::string GetUuidImpl() = 0;
+	// 用于清除一个目录，平台相关
+	virtual bool ClearDirectoryImpl(std::string& strDir, bool bIncludeSelf) = 0;
+	// 用于获得另存为的路径，平台相关
+	virtual std::string GetSavePathImpl() = 0;
+	// 用于新建数据库的时候，进行新建处理
+	virtual std::string NewDbImpl() = 0;
+	//
+	virtual std::string GetAppPathImpl() = 0;
+	/////////////// 通用功能函数，
 public:
 
 	// 判断数据库是否打开
@@ -69,23 +68,23 @@ public:
 		// 直接返回派生类实现的结果
 		return IsDBOpenedImpl();
 	}
-	
+
 	// 连接数据库
-	bool OpenDB(std::__cxx11::string strFile)
+	bool OpenDB(std::string strFile)
 	{
 		//
-		if(strFile.empty())
+		if (strFile.empty())
 		{
 			m_strLastError = "数据库文件名为空！";
 			return false;
 		}
 
 		// 关闭数据库
-		CloseDB ();
+		CloseDB();
 
 		// 设置属性
 		m_strFile = strFile;
-		m_strCurrentTempPath = m_strRoamingPath + GetUuidImpl() + "\\";
+		m_strCurrentTempPath = GetAppPathImpl()+"Roaming\\"  +GetUuidImpl() + "\\";
 		m_strCurrentFile = m_strCurrentTempPath + "_current";
 		m_strCurrentFileTmp = m_strCurrentFile + "_tmp";
 		m_iOperateCurrent = 0;
@@ -124,7 +123,7 @@ public:
 
 		// 设置属性
 		m_strFile = "";
-		m_strCurrentTempPath = m_strRoamingPath + GetUuidImpl() + "\\";
+		m_strCurrentTempPath = GetAppPathImpl() + "Roaming\\"  + GetUuidImpl() + "\\";
 		m_strCurrentFile = m_strCurrentTempPath + "_current";
 		m_strCurrentFileTmp = m_strCurrentFile + "_tmp";
 		m_iOperateCurrent = 0;
@@ -313,8 +312,6 @@ protected:
     CDbInterface *m_db;
     // 通过参数传进来的属性值
     std::string m_strFile;
-    // 临时文件目录
-    std::string m_strRoamingPath;
     // 当前临时文件目录
     std::string m_strCurrentTempPath;
     // 当前操作的文件路径名

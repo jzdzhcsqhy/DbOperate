@@ -196,6 +196,11 @@ public:
     {
         return strTag + strIn + strTag;
     }
-};
+
+
+	inline static std::string get_app_path()
+	{
+		return "";
+	}
 
 #endif // COMMONSTRING_HPP
