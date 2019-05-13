@@ -202,5 +202,6 @@ public:
 	{
 		return "";
 	}
+ };
 
 #endif // COMMONSTRING_HPP

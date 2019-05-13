@@ -9,7 +9,7 @@
 
 
 CMutestDbLogic::CMutestDbLogic()
-    :CDbLogic (PATH_ROAMING)
+    :CDbLogic ()
 {
 
 }
@@ -91,4 +91,9 @@ std::string CMutestDbLogic::GetSavePathImpl()
 string CMutestDbLogic::NewDbImpl()
 {
     return "";
+}
+
+string CMutestDbLogic::GetAppPathImpl()
+{
+    return "Roaming\\";
 }

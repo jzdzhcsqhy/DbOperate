@@ -10,7 +10,10 @@ QT       += sql
 INCLUDEPATH += ../../../CommonFiles
 INCLUDEPATH += ../../../Interface
 
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+QMAKE_CXXFLAGS +=  -Wno-unused-parameter
 
 TARGET = QtSqliteImplPrj
 TEMPLATE = app

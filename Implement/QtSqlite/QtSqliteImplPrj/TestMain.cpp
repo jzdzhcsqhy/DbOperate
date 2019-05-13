@@ -11,7 +11,6 @@ CTestMain::CTestMain(QWidget *parent) :
 
 
     auto & dblogic = CQtDbMgr::GetDb();
-
 }
 
 CTestMain::~CTestMain()

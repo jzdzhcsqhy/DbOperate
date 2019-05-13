@@ -40,6 +40,8 @@ protected:
     // 用于新建数据库的时候，进行新建处理
     virtual std::string NewDbImpl();
 
+    //
+    virtual std::string GetAppPathImpl();
 ///////////////////////以下是个人见解
 private:
     // 实现私有赋值操作符和拷贝构造函数，
@@ -47,13 +49,13 @@ private:
     // 私有赋值操作符，拒绝赋值
     CMutestDbLogic& operator=(const CMutestDbLogic& r )
     {
-        Q_UNUSED(r);
+        //Q_UNUSED(r);
         return *this;
     }
     // 私有拷贝构造函数，拒绝拷贝构造
-    CMutestDbLogic( CMutestDbLogic& r ) : CDbLogic("")
+    CMutestDbLogic( CMutestDbLogic& r ) : CDbLogic()
     {
-        Q_UNUSED(r);
+        //Q_UNUSED(r);
     }
 };
 
